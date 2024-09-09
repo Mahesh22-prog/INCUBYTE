@@ -1,0 +1,151 @@
+ BDD format test cases for Gmail function 
+
+Positive BDD Test cases
+
+Scenario: Compose and send an email with a valid subject and body
+  Given the user is logged into their Gmail account
+  When the user clicks the "Compose" button
+  Then a new email compose window should open
+  When the user enters "incubyte" in the subject field
+  And the user types "Qa test for incubyte" in the email body
+  And the user enters a valid recipient's email in the "To" field
+  And the user clicks the "Send" button
+  Then the email should be successfully sent
+  And the sent email should appear in the "Sent" folder
+
+Scenario: Save the email to drafts if not sent
+  Given the user is composing an email
+  When the user enters "incubyte" in the subject field
+  And the user types "Qa test for incubyte" in the email body
+  But the user closes the compose window without sending the email
+  Then the email should be saved in the "Drafts" folder
+
+Scenario: Attach a file to the email
+  Given the user is composing an email
+  When the user enters "incubyte" in the subject field
+  And the user types "Qa test for incubyte" in the email body
+  And the user attaches a file to the email
+  Then the file should be uploaded and shown as an attachment
+  When the user clicks the "Send" button
+  Then the email should be sent with the attachment
+
+Scenario: Send an email to multiple recipients
+  Given the user is composing an email
+  When the user enters "incubyte" in the subject field
+  And the user types "Qa test for incubyte" in the email body
+  And the user enters multiple valid recipients in the "To" and "CC" fields
+  When the user clicks the "Send" button
+  Then the email should be sent to all recipients
+
+Scenario: Auto-suggest previously used email addresses
+  Given the user is composing an email
+  When the user begins typing an email address in the "To" field
+  Then previously used email addresses matching the input should be auto-suggested
+
+Scenario: Ensure email is delivered to all recipients
+  Given the user has sent an email
+  When the email is successfully sent
+  Then all recipients in the "To", "CC", and "BCC" fields should receive the email
+
+
+
+
+
+
+Negative Test Cases 
+Scenario: Attempt to send an email without a recipient
+Given the user is composing an email
+When the user enters no email in the TO field
+And the user enters "incubyte" in the subject field
+And the user types "Qa test for incubyte" in the email body
+When the user clicks the "Send" button
+Then the system should display an error message that a recipient is required
+And the email should not be sent.
+
+Scenario: Attempt to send an email without a subject and body
+  Given the user is composing an email
+  When the user enters "recipient@example.com" in the TO field
+  And the user does not enter anything in the subject field
+  And the user does not type anything in the email body
+  When the user clicks the "Send" button
+  Then the system should display a warning message about missing the subject and body
+  And the email should not be sent without user confirmation.
+
+Scenario: Attempt to send an email with special characters in the TO field
+  Given the user is composing an email
+  When the user enters "invalid!@example.com" in the TO field
+  And the user enters "incubyte" in the subject field
+  And the user types "Qa test for incubyte" in the email body
+  When the user clicks the "Send" button
+  Then the system should display an error message about invalid characters in the recipient field
+  And the email should not be sent
+
+Scenario: Attempt to send an email with an invalid recipient email address
+  Given the user is composing an email
+  When the user enters "invalid-email" in the TO field
+  And the user enters "incubyte" in the subject field
+  And the user types "Qa test for incubyte" in the email body
+  When the user clicks the "Send" button
+  Then the system should display an error message that the email address is invalid
+  And the email should not be sent
+
+Scenario: Attempt to send an email without typing anything in the email body
+  Given the user is composing an email
+  When the user enters "recipient@example.com" in the TO field
+  And the user enters "incubyte" in the subject field
+  And the user does not type anything in the email body
+  When the user clicks the "Send" button
+  Then the system should prompt the user about sending an empty email body
+  And the email should not be sent unless the user confirms
+
+Scenario: Attempt to send an email with more recipients than allowed
+  Given the user is composing an email
+  When the user enters multiple email addresses in the TO field exceeding the allowed limit
+  And the user enters "incubyte" in the subject field
+  And the user types "Qa test for incubyte" in the email body
+  When the user clicks the "Send" button
+  Then the system should display an error message about exceeding the maximum number of recipients
+  And the email should not be sent
+
+Scenario: Attempt to send an email with an attachment larger than the allowed size
+  Given the user is composing an email
+  When the user enters "recipient@example.com" in the TO field
+  And the user enters "incubyte" in the subject field
+  And the user types "Qa test for incubyte" in the email body
+  And the user attaches a file larger than the allowed size limit
+  When the user clicks the "Send" button
+  Then the system should display an error message about the file size exceeding the limit
+  And the email should not be sent
+
+Scenario: Attempt to send an email without a subject
+  Given the user is composing an email
+  When the user enters "recipient@example.com" in the TO field
+  And the user leaves the subject field empty
+  And the user types "Qa test for incubyte" in the email body
+  When the user clicks the "Send" button
+  Then the system should prompt the user about sending the email without a subject
+  And the email should not be sent unless the user confirms
+
+Scenario: Attempt to send an email without filling any fields
+  Given the user is composing an email
+  When the user does not enter anything in the TO field
+  And the user does not enter anything in the subject field
+  And the user does not type anything in the email body
+  When the user clicks the "Send" button
+  Then the system should display error messages for missing fields
+  And the email should not be sent
+
+Scenario: Attempt to send an email with invalid addresses in the CC or BCC fields
+  Given the user is composing an email
+  When the user enters "recipient@example.com" in the TO field
+  And the user enters "invalid-email" in the CC field
+  And the user enters "incubyte" in the subject field
+  And the user types "Qa test for incubyte" in the email body
+  When the user clicks the "Send" button
+  Then the system should display an error message about the invalid email in the CC field
+  And the email should not be sent
+
+
+
+ 
+
